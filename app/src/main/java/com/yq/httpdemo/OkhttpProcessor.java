@@ -22,9 +22,9 @@ public class OkhttpProcessor implements IHttpProcessor {
 
     private final Handler handler;
 
-    public OkhttpProcessor(OkHttpClient client) {
+    public OkhttpProcessor() {
 
-        this.client = client;
+        this.client = OkHttpClientUtil.getClient();
 
         handler = new Handler();
 
