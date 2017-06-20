@@ -2,8 +2,6 @@ package com.yq.httpdemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
-import android.util.Log;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -19,11 +17,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv = ((TextView) findViewById(R.id.tv_result));
-        HttpService.init(new OkhttpProcessor(OkHttpClientUtil.getClient()));
-//        HttpService.init(new OkhttpProcessor(new OkHttpClient()));
+//        HttpService.init(new OkhttpProcessor(OkHttpClientUtil.getClient()));
+        HttpService.init(new OkhttpProcessor());
 
-//        String url = "https://192.168.1.240/phone/interest/getInterestRankingByMemberName.json";
-        String url = "https://192.168.1.240/help/help_dynamic.jhtml?id=31";
+        String url = "https://phone.hnticai.com/interest/getInterestRankingByMemberName.json";
+//        String url = "https://192.168.1.240/help/help_dynamic.jhtml?id=31";
 //        url = "https://api.github.com/users/octocat/repos";
 
 //        url+="?memberName=18516692370";
@@ -36,33 +34,19 @@ public class MainActivity extends AppCompatActivity {
          * 用{@link HttpCallback}方便解析
          * {@link HttpCallback1<T>} 只适用于解析具体的类，不适用于二次泛型，及{@link ReturnMessage<T>}的情况
          */
-        HttpService.getServiceInstance().get(url, null, new HttpCallback() {
-
-            @Override
-            public void onSuccess(final String body) {
-
-                Log.i("mainactivity_http", "onSuccess: " + body);
-
-//                ReturnMessage<MemberGuessInfo> returnMessage = JsonUtil.getReturnMsgByT1(body, new TypeToken<ReturnMessage<MemberGuessInfo>>() {
-//                });
-
-                tv.setText(body);
-
-                tv.setText(Html.fromHtml(body));
-
-            }
-
-            @Override
-            public void onFailure(String e) {
-
-            }
-        });
-//        HttpService.getServiceInstance().post(url, map, new HttpCallback1<MemberGuessInfo>() {
+//        HttpService.getServiceInstance().get(url, null, new HttpCallback() {
 //
 //            @Override
-//            public void onSuccess(MemberGuessInfo response) {
+//            public void onSuccess(final String body) {
 //
-//                ((TextView) findViewById(R.id.tv_result)).setText(response.toString());
+//                Log.i("mainactivity_http", "onSuccess: " + body);
+//
+////                ReturnMessage<MemberGuessInfo> returnMessage = JsonUtil.getReturnMsgByT1(body, new TypeToken<ReturnMessage<MemberGuessInfo>>() {
+////                });
+//
+//                tv.setText(body);
+//
+//                tv.setText(Html.fromHtml(body));
 //
 //            }
 //
@@ -71,6 +55,20 @@ public class MainActivity extends AppCompatActivity {
 //
 //            }
 //        });
+        HttpService.getServiceInstance().post(url, map, new HttpCallback1<ReturnMessage<MemberGuessInfo>, MemberGuessInfo>() {
+
+            @Override
+            public void onSuccess(ReturnMessage<MemberGuessInfo> response) {
+
+                ((TextView) findViewById(R.id.tv_result)).setText(response.toString());
+
+            }
+
+            @Override
+            public void onFailure(String e) {
+
+            }
+        });
     }
 
     public class MemberGuessInfo implements Serializable {
